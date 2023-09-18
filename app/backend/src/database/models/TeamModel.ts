@@ -8,7 +8,7 @@ import {
 import db from '.';
 
 class TeamModel extends Model<InferAttributes<TeamModel>,
-  InferCreationAttributes<TeamModel>> {
+InferCreationAttributes<TeamModel>> {
   declare id: CreationOptional<number>;
 
   declare teamName: string;
@@ -24,7 +24,7 @@ TeamModel.init({
   teamName: {
     type: DataTypes.STRING,
     allowNull: false,
-  }, 
+  },
 }, {
   sequelize: db,
   modelName: 'teams',
