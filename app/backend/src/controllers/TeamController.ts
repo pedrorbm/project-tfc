@@ -13,8 +13,10 @@ export default class TeamController {
     res.status(mapStatusHTTP(status)).json(data);
   }
 
-  public async getAllBooks(_req: Request, res: Response) {
-    const serviceResponse = await this.teamService.getAllTeams();
-    res.status(200).json(serviceResponse.data);
+  public async getTeamById(req: Request, res: Response) {
+    const { id } = req.params;
+    const { status, data } = await this.teamService.getTeamById(Number(id));
+
+    return res.status(mapStatusHTTP(status)).json(data);
   }
 }
