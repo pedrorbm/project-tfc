@@ -12,4 +12,11 @@ export default class LoginController {
 
     return res.status(mapStatusHTTP(status)).json(data);
   }
+
+  public async loginValidateToken(req: Request, res: Response) {
+    const token = req.header('authorization');
+    const { status, data } = await this.userService.findRole(String(token));
+
+    return res.status(mapStatusHTTP(status)).json(data);
+  }
 }
