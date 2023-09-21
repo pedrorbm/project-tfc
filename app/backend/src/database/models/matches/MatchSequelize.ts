@@ -57,9 +57,9 @@ MatchSequelize.init({
   underscored: true,
 });
 
-MatchSequelize.belongsTo(TeamSequelize, { foreignKey: 'homeTeamId' });
+MatchSequelize.belongsTo(TeamSequelize, { foreignKey: 'homeTeamId', as: 'homeTeam' });
 
-MatchSequelize.belongsTo(TeamSequelize, { foreignKey: 'awayTeamId' });
+MatchSequelize.belongsTo(TeamSequelize, { foreignKey: 'awayTeamId', as: 'awayTeam' });
 
 TeamSequelize.hasMany(MatchSequelize, { foreignKey: 'homeTeamId' });
 
