@@ -11,7 +11,13 @@ route.get('/', (req: Request, res: Response) => matchesController.getAllMatches(
 route.patch(
   '/:id/finish',
   verifyToken,
-  (req: Request, res: Response) => matchesController.updateMatch(req, res),
+  (req: Request, res: Response) => matchesController.updateMatchProgress(req, res),
+);
+
+route.patch(
+  '/:id',
+  verifyToken,
+  (req: Request, res: Response) => matchesController.updateMatchGoals(req, res),
 );
 
 export default route;
