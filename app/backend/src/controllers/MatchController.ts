@@ -20,4 +20,12 @@ export default class TeamController {
 
     return res.status(mapStatusHTTP(status)).json(data);
   }
+
+  public async updateMatch(req: Request, res: Response) {
+    const { id } = req.params;
+
+    const { status, data } = await this.matchService.updateMatch(Number(id));
+
+    return res.status(mapStatusHTTP(status)).json(data);
+  }
 }

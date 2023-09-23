@@ -1,3 +1,4 @@
+import { Message } from '../types/Token';
 import { ServiceResponse } from '../Interfaces/ServiceResponse';
 import IMatch from '../Interfaces/matches/IMatch';
 import IMatchModel from '../Interfaces/matches/IMatchModel';
@@ -24,5 +25,13 @@ export default class MatchService {
     }
 
     return { status: 'SUCCESSFUL', data: matches };
+  }
+
+  public async updateMatch(id: number): Promise<ServiceResponse<Message>> {
+    const match = await this.matchModel.findById(id);
+    if (!match) return { status: 'NOT_FOUND', data: { message: 'Partida não existe' } };
+    await this.matchModel.updateProgressMatch(id);
+
+    return { status: 'SUCCESSFUL', data: { message: 'Finished' } };
   }
 }

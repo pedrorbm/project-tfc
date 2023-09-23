@@ -14,4 +14,18 @@ export default class MatchModel implements IMatchModel {
 
     return matches;
   }
+
+  async findById(id: number): Promise<IMatch | null> {
+    const match = await this.model.findByPk(id);
+    if (!match) return null;
+
+    return match;
+  }
+
+  async updateProgressMatch(id: number): Promise<number | null> {
+    const [affectedRows] = await this.model.update({ inProgress: false }, { where: { id } });
+    if (affectedRows === 0) return null;
+
+    return affectedRows;
+  }
 }
