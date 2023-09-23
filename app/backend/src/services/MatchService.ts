@@ -4,6 +4,7 @@ import IMatch from '../Interfaces/matches/IMatch';
 import IMatchModel from '../Interfaces/matches/IMatchModel';
 import MatchModel from '../database/models/matches/MatchModel';
 import { UpdateMatch } from '../types/UpdateMatch';
+import { CreateMatch } from '../types/CreateMatch';
 
 const messageMatchNotExist = { message: 'Partida não existe' };
 
@@ -46,5 +47,11 @@ export default class MatchService {
     if (!updateGoals) return { status: 'NOT_FOUND', data: messageMatchNotExist };
 
     return { status: 'SUCCESSFUL', data: updateGoals };
+  }
+
+  public async createMatch(object: CreateMatch): Promise<ServiceResponse<IMatch>> {
+    const create = await this.matchModel.createMatch(object);
+
+    return { status: 'CREATED', data: create };
   }
 }

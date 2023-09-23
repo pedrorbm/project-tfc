@@ -20,4 +20,10 @@ route.patch(
   (req: Request, res: Response) => matchesController.updateMatchGoals(req, res),
 );
 
+route.post(
+  '/',
+  verifyToken,
+  (req: Request, res: Response) => matchesController.createMatch(req, res),
+);
+
 export default route;

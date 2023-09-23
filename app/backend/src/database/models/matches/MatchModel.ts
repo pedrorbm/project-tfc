@@ -3,6 +3,7 @@ import IMatchModel from '../../../Interfaces/matches/IMatchModel';
 import IMatch from '../../../Interfaces/matches/IMatch';
 import TeamSequelize from '../teams/TeamSequelize';
 import { UpdateMatch } from '../../../types/UpdateMatch';
+import { CreateMatch } from '../../../types/CreateMatch';
 
 export default class MatchModel implements IMatchModel {
   private model = MatchSequelize;
@@ -38,5 +39,11 @@ export default class MatchModel implements IMatchModel {
     const match = this.findById(id);
 
     return match;
+  }
+
+  async createMatch(object: CreateMatch): Promise<IMatch> {
+    const create = await this.model.create(object);
+
+    return create;
   }
 }

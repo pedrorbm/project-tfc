@@ -36,4 +36,12 @@ export default class TeamController {
 
     return res.status(mapStatusHTTP(status)).json(data);
   }
+
+  public async createMatch(req: Request, res: Response) {
+    const { homeTeamId, homeTeamGoals, awayTeamId, awayTeamGoals } = req.body;
+    const object = { homeTeamId, homeTeamGoals, awayTeamId, awayTeamGoals, inProgress: true };
+    const { status, data } = await this.matchService.createMatch(object);
+
+    return res.status(mapStatusHTTP(status)).json(data);
+  }
 }
