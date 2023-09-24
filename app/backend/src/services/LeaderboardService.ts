@@ -36,7 +36,7 @@ export default class LeaderboardService {
     const teams = await this.teamModel.findAll();
 
     const tables = teams.map((team) => ({
-      name: team?.teamName,
+      name: team.teamName,
       totalPoints: 0,
       totalGames: 0,
       totalVictories: 0,
@@ -69,7 +69,6 @@ export default class LeaderboardService {
     const team = await this.teamModel.findById(homeTeamId);
 
     const table = {
-      name: team?.teamName,
       totalPoints: await this.homePoints(homeTeamGoals, awayTeamGoals),
       totalGames: 1,
       totalVictories: homeTeamGoals > awayTeamGoals ? 1 : 0,
@@ -145,7 +144,7 @@ export default class LeaderboardService {
       const awayTeam = await this.awayTeam(match);
 
       const stats = this._tables.find(({ name }) => name === awayTeam.name);
-      if (!stats) return null;
+      if (!stats) return stats;
 
       stats.totalPoints += awayTeam.table.totalPoints;
       stats.totalGames += awayTeam.table.totalGames;
