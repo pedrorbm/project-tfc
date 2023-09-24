@@ -13,9 +13,9 @@ export default class TeamController {
     return res.status(mapStatusHTTP(status)).json(data);
   }
 
-  // public async getLeaderboardAway(req: Request, res: Response) {
-  //   const { status, data } = await this.leaderboardService.awayTeamResult();
+  public async getLeaderboardAway(req: Request, res: Response) {
+    const { status, data } = await this.leaderboardService.awayTeamResult();
 
-  //   return res.status(mapStatusHTTP(status)).json(data);
-  // }
+    return res.status(mapStatusHTTP(status)).json(data);
+  }
 }

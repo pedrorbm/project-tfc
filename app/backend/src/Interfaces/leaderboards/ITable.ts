@@ -7,6 +7,6 @@ export default interface ITable {
   totalLosses: number;
   goalsFavor: number;
   goalsOwn: number;
-  // goalsBalance: number;
-  // efficiency: string;
+  goalsBalance: number;
+  efficiency: string;
 }
