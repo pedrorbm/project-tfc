@@ -68,6 +68,7 @@ export default class LeaderboardService {
     const team = await this.teamModel.findById(homeTeamId);
 
     const table = {
+      name: team?.teamName,
       totalPoints: await this.homePoints(homeTeamGoals, awayTeamGoals),
       totalGames: 1,
       totalVictories: homeTeamGoals > awayTeamGoals ? 1 : 0,
