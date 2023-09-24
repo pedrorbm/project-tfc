@@ -44,8 +44,8 @@ export default class LeaderboardService {
       totalLosses: 0,
       goalsFavor: 0,
       goalsOwn: 0,
-      goalsBalance: 0,
-      efficiency: '0',
+      // goalsBalance: 0,
+      // efficiency: '0',
     }));
 
     this._tables = tables;
@@ -57,7 +57,7 @@ export default class LeaderboardService {
 
       if (b.totalVictories !== a.totalVictories) return b.totalVictories - a.totalVictories;
 
-      if (b.goalsBalance !== a.goalsBalance) return b.goalsBalance - a.goalsBalance;
+      // if (b.goalsBalance !== a.goalsBalance) return b.goalsBalance - a.goalsBalance;
 
       return b.goalsFavor - a.goalsFavor;
     });
@@ -76,8 +76,8 @@ export default class LeaderboardService {
       totalLosses: homeTeamGoals < awayTeamGoals ? 1 : 0,
       goalsFavor: homeTeamGoals,
       goalsOwn: awayTeamGoals,
-      goalsBalance: homeTeamGoals - awayTeamGoals,
-      efficiency: '0',
+      // goalsBalance: homeTeamGoals - awayTeamGoals,
+      // efficiency: '0',
     };
 
     return { table, name: team?.teamName };
@@ -98,8 +98,8 @@ export default class LeaderboardService {
       stats.totalLosses += homeTeam.table.totalLosses;
       stats.goalsFavor += homeTeam.table.goalsFavor;
       stats.goalsOwn += homeTeam.table.goalsOwn;
-      stats.goalsBalance = stats.goalsFavor - stats.goalsOwn;
-      stats.efficiency = ((stats.totalPoints / (stats.totalGames * 3)) * 100).toFixed(2);
+      // stats.goalsBalance = stats.goalsFavor - stats.goalsOwn;
+      // stats.efficiency = ((stats.totalPoints / (stats.totalGames * 3)) * 100).toFixed(2);
     });
 
     await this.classification();
@@ -107,58 +107,58 @@ export default class LeaderboardService {
     return { status: 'SUCCESSFUL', data: this._tables };
   }
 
-  private async awayPoints(awayGoals: number, homeGoals: number) {
-    await this.teamModel.findAll();
+  // private async awayPoints(awayGoals: number, homeGoals: number) {
+  //   await this.teamModel.findAll();
 
-    if (awayGoals > homeGoals) return 3;
+  //   if (awayGoals > homeGoals) return 3;
 
-    if (awayGoals < homeGoals) return 0;
+  //   if (awayGoals < homeGoals) return 0;
 
-    return 1;
-  }
+  //   return 1;
+  // }
 
-  private async awayTeam(match: IMatch) {
-    await this.table();
-    const { awayTeamId, homeTeamGoals, awayTeamGoals } = match;
-    const team = await this.teamModel.findById(awayTeamId);
+  // private async awayTeam(match: IMatch) {
+  //   await this.table();
+  //   const { awayTeamId, homeTeamGoals, awayTeamGoals } = match;
+  //   const team = await this.teamModel.findById(awayTeamId);
 
-    const table = {
-      name: team?.teamName,
-      totalPoints: await this.awayPoints(awayTeamGoals, homeTeamGoals),
-      totalGames: 1,
-      totalVictories: awayTeamGoals > homeTeamGoals ? 1 : 0,
-      totalDraws: awayTeamGoals === homeTeamGoals ? 1 : 0,
-      totalLosses: awayTeamGoals < homeTeamGoals ? 1 : 0,
-      goalsFavor: awayTeamGoals,
-      goalsOwn: awayTeamGoals,
-      goalsBalance: awayTeamGoals - homeTeamGoals,
-      efficiency: '0',
-    };
+  //   const table = {
+  //     name: team?.teamName,
+  //     totalPoints: await this.awayPoints(awayTeamGoals, homeTeamGoals),
+  //     totalGames: 1,
+  //     totalVictories: awayTeamGoals > homeTeamGoals ? 1 : 0,
+  //     totalDraws: awayTeamGoals === homeTeamGoals ? 1 : 0,
+  //     totalLosses: awayTeamGoals < homeTeamGoals ? 1 : 0,
+  //     goalsFavor: awayTeamGoals,
+  //     goalsOwn: awayTeamGoals,
+  //     goalsBalance: awayTeamGoals - homeTeamGoals,
+  //     efficiency: '0',
+  //   };
 
-    return { table, name: team?.teamName };
-  }
+  //   return { table, name: team?.teamName };
+  // }
 
-  public async awayTeamResult(): Promise<ServiceResponse<ITable[]>> {
-    await this.matchFinish();
-    this._matchesFinish.forEach(async (match) => {
-      const awayTeam = await this.awayTeam(match);
+  // public async awayTeamResult(): Promise<ServiceResponse<ITable[]>> {
+  //   await this.matchFinish();
+  //   this._matchesFinish.forEach(async (match) => {
+  //     const awayTeam = await this.awayTeam(match);
 
-      const stats = this._tables.find(({ name }) => name === awayTeam.name);
-      if (!stats) return stats;
+  //     const stats = this._tables.find(({ name }) => name === awayTeam.name);
+  //     if (!stats) return stats;
 
-      stats.totalPoints += awayTeam.table.totalPoints;
-      stats.totalGames += awayTeam.table.totalGames;
-      stats.totalVictories += awayTeam.table.totalVictories;
-      stats.totalDraws += awayTeam.table.totalDraws;
-      stats.totalLosses += awayTeam.table.totalLosses;
-      stats.goalsFavor += awayTeam.table.goalsFavor;
-      stats.goalsOwn += awayTeam.table.goalsOwn;
-      stats.goalsBalance = stats.goalsFavor - stats.goalsOwn;
-      stats.efficiency = ((stats.totalPoints / (stats.totalGames * 3)) * 100).toFixed(2);
-    });
+  //     stats.totalPoints += awayTeam.table.totalPoints;
+  //     stats.totalGames += awayTeam.table.totalGames;
+  //     stats.totalVictories += awayTeam.table.totalVictories;
+  //     stats.totalDraws += awayTeam.table.totalDraws;
+  //     stats.totalLosses += awayTeam.table.totalLosses;
+  //     stats.goalsFavor += awayTeam.table.goalsFavor;
+  //     stats.goalsOwn += awayTeam.table.goalsOwn;
+  //     stats.goalsBalance = stats.goalsFavor - stats.goalsOwn;
+  //     stats.efficiency = ((stats.totalPoints / (stats.totalGames * 3)) * 100).toFixed(2);
+  //   });
 
-    await this.classification();
+  //   await this.classification();
 
-    return { status: 'SUCCESSFUL', data: this._tables };
-  }
+  //   return { status: 'SUCCESSFUL', data: this._tables };
+  // }
 }
