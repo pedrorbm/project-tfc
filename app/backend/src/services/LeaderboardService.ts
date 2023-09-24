@@ -3,7 +3,6 @@ import ITeamModel from '../Interfaces/teams/ITeamModel';
 import TeamModel from '../database/models/teams/TeamModel';
 import MatchModel from '../database/models/matches/MatchModel';
 import { ServiceResponse } from '../Interfaces/ServiceResponse';
-// import ITeam from '../Interfaces/teams/ITeam';
 import ITable from '../Interfaces/leaderboards/ITable';
 import IMatch from '../Interfaces/matches/IMatch';
 
@@ -89,7 +88,7 @@ export default class LeaderboardService {
       const homeTeam = await this.homeTeam(match);
 
       const stats = this._tables.find(({ name }) => name === homeTeam.name);
-      if (!stats) return null;
+      if (!stats) return stats;
 
       stats.totalPoints += homeTeam.table.totalPoints;
       stats.totalGames += homeTeam.table.totalGames;

@@ -7,13 +7,13 @@ export default class TeamController {
     private leaderboardService = new LeaderboardService(),
   ) { }
 
-  public async getLeaderboardHome(req: Request, res: Response) {
+  public async getLeaderboardHome(_req: Request, res: Response) {
     const { status, data } = await this.leaderboardService.homeTeamResult();
 
     return res.status(mapStatusHTTP(status)).json(data);
   }
 
-  public async getLeaderboardAway(req: Request, res: Response) {
+  public async getLeaderboardAway(_req: Request, res: Response) {
     const { status, data } = await this.leaderboardService.awayTeamResult();
 
     return res.status(mapStatusHTTP(status)).json(data);
