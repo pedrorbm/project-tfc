@@ -2,37 +2,60 @@ import IMatchModel from '../Interfaces/matches/IMatchModel';
 import ITeamModel from '../Interfaces/teams/ITeamModel';
 import TeamModel from '../database/models/teams/TeamModel';
 import MatchModel from '../database/models/matches/MatchModel';
-import { ServiceResponse } from '../Interfaces/ServiceResponse';
 import ITable from '../Interfaces/leaderboards/ITable';
 import IMatch from '../Interfaces/matches/IMatch';
+import { ServiceResponse } from '../Interfaces/ServiceResponse';
+import ITeam from '../Interfaces/teams/ITeam';
 
 export default class LeaderboardService {
   private _tables: ITable[] = [];
   private _matchesFinish: IMatch[] = [];
+  private _teams: ITeam[] = [];
+
   constructor(
-    private teamModel: ITeamModel = new TeamModel(),
-    private matchModel: IMatchModel = new MatchModel(),
-  ) { }
+    private teamsModel: ITeamModel = new TeamModel(),
+    private matchesModel: IMatchModel = new MatchModel(),
+  ) {}
 
-  private async matchFinish() {
-    const matches = await this.matchModel.findAll();
-    const filterFinish = matches.filter(({ inProgress }) => inProgress === false);
+  async classification() {
+    this._tables.sort((a, b) => {
+      if (b.totalPoints !== a.totalPoints) return b.totalPoints - a.totalPoints;
 
-    this._matchesFinish = filterFinish;
+      if (b.totalVictories !== a.totalVictories) return b.totalVictories - a.totalVictories;
+
+      if (b.goalsBalance !== a.goalsBalance) return b.goalsBalance - a.goalsBalance;
+
+      return b.goalsFavor - a.goalsFavor;
+    });
   }
 
-  private async homePoints(homeGoals: number, awayGoals: number) {
-    await this.teamModel.findAll();
+  async results(goalsTeamOne: number, goalsTeamTwo: number, position: number) {
+    if (goalsTeamOne === goalsTeamTwo) {
+      this._tables[position].totalDraws += 1;
+      this._tables[position].totalPoints += 1;
+    }
 
-    if (homeGoals > awayGoals) return 3;
+    if (goalsTeamOne > goalsTeamTwo) {
+      this._tables[position].totalVictories += 1;
+      this._tables[position].totalPoints += 3;
+    }
 
-    if (homeGoals < awayGoals) return 0;
+    if (goalsTeamOne < goalsTeamTwo) {
+      this._tables[position].totalLosses += 1;
+    }
 
-    return 1;
+    this._tables[position].totalGames += 1;
+    this._tables[position].goalsFavor += goalsTeamOne;
+    this._tables[position].goalsOwn += goalsTeamTwo;
+    this._tables[position].goalsBalance += goalsTeamOne - goalsTeamTwo;
+    this._tables[position].efficiency = ((this._tables[position].totalPoints
+      / (this._tables[position].totalGames * 3)) * 100).toFixed(2);
   }
 
-  private async table() {
-    const teams = await this.teamModel.findAll();
+  async table() {
+    const teams = await this.teamsModel.findAll();
+
+    this._teams = teams;
 
     const tables = teams.map((team) => ({
       name: team.teamName,
@@ -48,114 +71,42 @@ export default class LeaderboardService {
     }));
 
     this._tables = tables;
+
+    const matches = await this.matchesModel.findAll();
+
+    this._matchesFinish = matches.filter((match) => match.inProgress === false);
   }
 
-  private async classification() {
-    this._tables.sort((a, b) => {
-      if (b.totalPoints !== a.totalPoints) return b.totalPoints - a.totalPoints;
-
-      if (b.totalVictories !== a.totalVictories) return b.totalVictories - a.totalVictories;
-
-      if (b.goalsBalance !== a.goalsBalance) return b.goalsBalance - a.goalsBalance;
-
-      return b.goalsFavor - a.goalsFavor;
-    });
-  }
-
-  private async homeTeam(match: IMatch) {
+  async teamHome(): Promise<ServiceResponse<ITable[]>> {
     await this.table();
-    const { homeTeamId, homeTeamGoals, awayTeamGoals } = match;
-    const team = await this.teamModel.findById(homeTeamId);
 
-    const table = {
-      name: team?.teamName,
-      totalPoints: await this.homePoints(homeTeamGoals, awayTeamGoals),
-      totalGames: 1,
-      totalVictories: homeTeamGoals > awayTeamGoals ? 1 : 0,
-      totalDraws: homeTeamGoals === awayTeamGoals ? 1 : 0,
-      totalLosses: homeTeamGoals < awayTeamGoals ? 1 : 0,
-      goalsFavor: homeTeamGoals,
-      goalsOwn: awayTeamGoals,
-      goalsBalance: homeTeamGoals - awayTeamGoals,
-      efficiency: '0',
-    };
+    await Promise.all(
+      this._matchesFinish.map(async (match) => {
+        const teamHome = this._teams.find((team) => team.id === match.homeTeamId);
 
-    return { table, name: team?.teamName };
-  }
+        const position = this._tables.findIndex((team) => team.name === teamHome?.teamName);
 
-  public async homeTeamResult(): Promise<ServiceResponse<ITable[]>> {
-    await this.matchFinish();
-    this._matchesFinish.forEach(async (match) => {
-      const homeTeam = await this.homeTeam(match);
-
-      const stats = this._tables.find(({ name }) => name === homeTeam.name);
-      if (!stats) return stats;
-
-      stats.totalPoints += homeTeam.table.totalPoints;
-      stats.totalGames += homeTeam.table.totalGames;
-      stats.totalVictories += homeTeam.table.totalVictories;
-      stats.totalDraws += homeTeam.table.totalDraws;
-      stats.totalLosses += homeTeam.table.totalLosses;
-      stats.goalsFavor += homeTeam.table.goalsFavor;
-      stats.goalsOwn += homeTeam.table.goalsOwn;
-      stats.goalsBalance = stats.goalsFavor - stats.goalsOwn;
-      stats.efficiency = ((stats.totalPoints / (stats.totalGames * 3)) * 100).toFixed(2);
-    });
+        await this.results(match.homeTeamGoals, match.awayTeamGoals, position);
+      }),
+    );
 
     await this.classification();
 
     return { status: 'SUCCESSFUL', data: this._tables };
   }
 
-  private async awayPoints(awayGoals: number, homeGoals: number) {
-    await this.teamModel.findAll();
-
-    if (awayGoals > homeGoals) return 3;
-
-    if (awayGoals < homeGoals) return 0;
-
-    return 1;
-  }
-
-  private async awayTeam(match: IMatch) {
+  async teamAway(): Promise<ServiceResponse<ITable[]>> {
     await this.table();
-    const { awayTeamId, homeTeamGoals, awayTeamGoals } = match;
-    const team = await this.teamModel.findById(awayTeamId);
 
-    const table = {
-      name: team?.teamName,
-      totalPoints: await this.awayPoints(awayTeamGoals, homeTeamGoals),
-      totalGames: 1,
-      totalVictories: awayTeamGoals > homeTeamGoals ? 1 : 0,
-      totalDraws: awayTeamGoals === homeTeamGoals ? 1 : 0,
-      totalLosses: awayTeamGoals < homeTeamGoals ? 1 : 0,
-      goalsFavor: awayTeamGoals,
-      goalsOwn: homeTeamGoals,
-      goalsBalance: awayTeamGoals - homeTeamGoals,
-      efficiency: '0',
-    };
+    await Promise.all(
+      this._matchesFinish.map(async (match) => {
+        const teamAway = this._teams.find((team) => team.id === match.awayTeamId);
 
-    return { table, name: team?.teamName };
-  }
+        const position = this._tables.findIndex((team) => team.name === teamAway?.teamName);
 
-  public async awayTeamResult(): Promise<ServiceResponse<ITable[]>> {
-    await this.matchFinish();
-    this._matchesFinish.forEach(async (match) => {
-      const awayTeam = await this.awayTeam(match);
-
-      const stats = this._tables.find(({ name }) => name === awayTeam.name);
-      if (!stats) return stats;
-
-      stats.totalPoints += awayTeam.table.totalPoints;
-      stats.totalGames += awayTeam.table.totalGames;
-      stats.totalVictories += awayTeam.table.totalVictories;
-      stats.totalDraws += awayTeam.table.totalDraws;
-      stats.totalLosses += awayTeam.table.totalLosses;
-      stats.goalsFavor += awayTeam.table.goalsFavor;
-      stats.goalsOwn += awayTeam.table.goalsOwn;
-      stats.goalsBalance = stats.goalsFavor - stats.goalsOwn;
-      stats.efficiency = ((stats.totalPoints / (stats.totalGames * 3)) * 100).toFixed(2);
-    });
+        await this.results(match.awayTeamGoals, match.homeTeamGoals, position);
+      }),
+    );
 
     await this.classification();
 

@@ -8,13 +8,13 @@ export default class TeamController {
   ) { }
 
   public async getLeaderboardHome(_req: Request, res: Response) {
-    const { status, data } = await this.leaderboardService.homeTeamResult();
+    const { status, data } = await this.leaderboardService.teamHome();
 
     return res.status(mapStatusHTTP(status)).json(data);
   }
 
   public async getLeaderboardAway(_req: Request, res: Response) {
-    const { status, data } = await this.leaderboardService.awayTeamResult();
+    const { status, data } = await this.leaderboardService.teamAway();
 
     return res.status(mapStatusHTTP(status)).json(data);
   }
