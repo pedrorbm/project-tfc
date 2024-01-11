@@ -8,6 +8,8 @@ Foi desenvolvido uma "API Node" para um site informativo sobre partidas e classi
 
 - Implementar em TypeScript.
 
+- Banco de dados MySQL
+
 - Ter conhecimento em POO e dos princípios do SOLID.
 
 - Conhecer a Arquitetura de Software MSC.
@@ -21,7 +23,7 @@ Foi desenvolvido uma "API Node" para um site informativo sobre partidas e classi
 - Saber utilizar o Docker e criar Dockerfiles.
 
 # Tecnologias utilizadas:
-- TypeScript, NodeJS, Docker, Sequelize e Jest.
+- TypeScript, NodeJS, MySQL, Docker, Sequelize e Jest.
 
 ## Desmontração do projeto
 
