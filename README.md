@@ -23,7 +23,7 @@ Foi desenvolvido uma "API Node" para um site informativo sobre partidas e classi
 - Saber utilizar o Docker e criar Dockerfiles.
 
 # Tecnologias utilizadas:
-- TypeScript, NodeJS, MySQL, Docker, Sequelize e Jest.
+- TypeScript, NodeJS, MySQL, Docker, Sequelize, REST, Mocha, Chai, e Sinon.
 
 ## Desmontração do projeto
 
