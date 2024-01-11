@@ -22,3 +22,13 @@ Foi desenvolvido uma "API Node" para um site informativo sobre partidas e classi
 
 # Tecnologias utilizadas:
 - TypeScript, NodeJS, Docker, Sequelize e Jest.
+
+## Desmontração do projeto
+
+#### PARTE 1
+![Apresentação-01](assets/example-01.gif)
+
+---
+
+#### PARTE 2
+![Apresentação-02](assets/example-02.gif)
