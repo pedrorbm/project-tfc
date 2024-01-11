@@ -1,10 +1,24 @@
-# :construction: README em construção ! :construction:
-<!-- Olá, Tryber!
-Esse é apenas um arquivo inicial para o README do seu projeto.
-É essencial que você preencha esse documento por conta própria, ok?
-Não deixe de usar nossas dicas de escrita de README de projetos, e deixe sua criatividade brilhar!
-:warning: IMPORTANTE: você precisa deixar nítido:
-- quais arquivos/pastas foram desenvolvidos por você; 
-- quais arquivos/pastas foram desenvolvidos por outra pessoa estudante;
-- quais arquivos/pastas foram desenvolvidos pela Trybe.
--->
+# Explicação do projeto:
+
+Foi desenvolvido uma "API Node" para um site informativo sobre partidas e classificações de futebol!
+
+# Conhecimento:
+
+- Ter conhecimento em NodeJS para construção de API's utilizando a lib Express.
+
+- Implementar em TypeScript.
+
+- Ter conhecimento em POO e dos princípios do SOLID.
+
+- Conhecer a Arquitetura de Software MSC.
+
+- Aplicar o conjunto de boas práticas REST & RESTfull.
+
+- Criar Testes de Integração usando as lib's mocha, chai, e sinon.
+
+- Implementar e saber utilizar ORM's para manuseio do Banco de Dados (Sequelize).
+
+- Saber utilizar o Docker e criar Dockerfiles.
+
+# Tecnologias utilizadas:
+- TypeScript, NodeJS, Docker, Sequelize e Jest.
